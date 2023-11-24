@@ -11,13 +11,19 @@ def ball_restart():
 
 
 def ball_animation():
-    global ball_speed_x, ball_speed_y
+    global ball_speed_x, ball_speed_y, player_score, opponent_score
     ball.x += ball_speed_x
     ball.y += ball_speed_y
 
     if ball.top <= 0 or ball.bottom >= screen_height:
         ball_speed_y *= -1
-    if ball.left <= 0 or ball.right >= screen_width:
+
+    if ball.left <= 0:
+        player_score += 1
+        ball_restart()
+
+    if ball.right >= screen_width:
+        opponent_score += 1
         ball_restart()
 
     if ball.colliderect(player) or ball.colliderect(opponent):
@@ -61,11 +67,17 @@ opponent = pygame.Rect(10, screen_height / 2 - 70, 10, 140)
 bg_color = pygame.Color("grey12")
 light_grey = (200, 200, 200)
 
-ball_speed_x = 7 * random.choice((1, -1))
-ball_speed_y = 7 * random.choice((1, -1))
+ball_speed_x = 7.7 * random.choice((1, -1))
+ball_speed_y = 7.7 * random.choice((1, -1))
 player_speed = 0
-opponent_speed = 6.5
-player_move = 5
+opponent_speed = 7.15
+player_move = 4.5
+
+# Text Variables
+player_score = 0
+opponent_score = 0
+game_font = pygame.font.Font("freesansbold.ttf", 32)
+
 
 while True:
     # Handling input
@@ -96,6 +108,12 @@ while True:
     pygame.draw.rect(screen, light_grey, opponent)
     pygame.draw.ellipse(screen, light_grey, ball)
     pygame.draw.aaline(screen, light_grey, (screen_width / 2, 0), (screen_width / 2, screen_height))
+
+    player_text = game_font.render(f"{player_score}", True, light_grey)
+    screen.blit(player_text, (660, 470))
+
+    opponent_text = game_font.render(f"{opponent_score}", True, light_grey)
+    screen.blit(opponent_text, (600, 470))
 
     # Updating the window
     pygame.display.flip()
